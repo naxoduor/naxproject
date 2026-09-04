@@ -1,0 +1,70 @@
+data:
+  input_csv: data/raw/EURUSD_H4.csv
+  parquet: data/parquet/EURUSD_H4.parquet
+
+strategy:
+  symbol: EURUSD
+
+#  risk_per_trade: 0.01
+  risk_per_trade: 0.07
+
+
+  atr_period: 14
+  atr_sl_multiplier: 1.0
+  atr_tp_multiplier: 5.0
+
+  rsi_period: 14
+
+  bb_period: 20
+  bb_std: 2.0
+
+  sma_fast: 50
+  sma_slow: 100
+
+  stochastic_period: 14
+  stochastic_smooth: 3
+
+  min_atr_ratio: 0.00005
+
+  transaction_cost_pips: 0.8
+
+technical:
+
+  rsi_long_min: 40
+  rsi_long_max: 70
+
+  rsi_short_min: 30
+  rsi_short_max: 60
+
+  bollinger_distance: 0.20
+
+ml:
+  horizon: 30
+
+#  train_size: 100000
+#  test_size: 20000
+
+#  train_size: 70000
+#  test_size: 10000
+
+  train_size: 23000
+  test_size: 1000
+
+#  train_size: 17500
+#  test_size: 2500
+
+
+
+
+  probability_long: 0.20
+  probability_short: 0.80
+
+#  probability_long: 0.55
+#  probability_short: 0.45
+
+
+  min_samples_leaf: 50
+
+  n_estimators: 300
+
+  random_state: 42
