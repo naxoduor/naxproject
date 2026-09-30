@@ -1,14 +1,29 @@
+import argparse
+
 import polars as pl
 
-INPUT = "data/raw/EURUSD_H4.csv"
-OUTPUT = "data/parquet/EURUSD_H4.parquet"
+INPUT = "data/raw/EURUSD_M5.csv"
+OUTPUT = "data/parquet/EURUSD_M5.parquet"
 
 
 def main():
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", default=INPUT)
+    parser.add_argument("--output", default=OUTPUT)
+    args = parser.parse_args()
+
     df = (
-        pl.scan_csv(INPUT,separator="\t",
+        pl.scan_csv(args.input,separator="\t",
         truncate_ragged_lines=True)
+        .rename({
+            "Time": "timestamp",
+            "Open": "open",
+            "High": "high",
+            "Low": "low",
+            "Close": "close",
+            "Volume": "volume",
+        })
         .with_columns(
             pl.col("timestamp")
             .str.strptime(
@@ -30,12 +45,12 @@ def main():
     )
 
     df.write_parquet(
-        OUTPUT,
+        args.output,
         compression="zstd"
     )
 
     print(f"Rows: {df.height}")
-    print(f"Written: {OUTPUT}")
+    print(f"Written: {args.output}")
 
 
 if __name__ == "__main__":

@@ -1,17 +1,23 @@
 data:
   input_csv: data/raw/EURUSD_H4.csv
-  parquet: data/parquet/EURUSD_H4.parquet
+  parquet: data/parquet/EURUSD_M15.parquet
+  timeframe_minutes: 60
+  m1_parquet: data/parquet/EURUSD_M1.parquet
+  m5_parquet: data/parquet/EURUSD_M5.parquet
+  lower_timeframe_parquet: data/parquet/EURUSD_M15.parquet
+  m30_parquet: data/parquet/EURUSD_M30.parquet
+  h1_parquet: data/parquet/EURUSD_H1.parquet
 
 strategy:
   symbol: EURUSD
 
-#  risk_per_trade: 0.01
-  risk_per_trade: 0.07
+  # risk_per_trade: 0.01
+  risk_per_trade: 0.2
 
 
   atr_period: 14
-  atr_sl_multiplier: 1.0
-  atr_tp_multiplier: 5.0
+  atr_sl_multiplier: 0.5
+  atr_tp_multiplier: 2.0
 
   rsi_period: 14
 
@@ -26,38 +32,44 @@ strategy:
 
   min_atr_ratio: 0.00005
 
+  use_m1_confirmation: false
+  use_m5_confirmation: true
+  use_m15_confirmation: false
+  use_m30_confirmation: false
+  use_h1_confirmation: false
+
   transaction_cost_pips: 0.8
 
 technical:
 
-  rsi_long_min: 40
-  rsi_long_max: 70
+  rsi_long_min: 20
+  rsi_long_max: 80
 
-  rsi_short_min: 30
-  rsi_short_max: 60
+  rsi_short_min: 20
+  rsi_short_max: 80
 
-  bollinger_distance: 0.20
+  bollinger_distance: 5
 
 ml:
   horizon: 30
 
-#  train_size: 100000
-#  test_size: 20000
+  train_size: 100000
+  test_size: 20000
 
 #  train_size: 70000
 #  test_size: 10000
 
-  train_size: 23000
-  test_size: 1000
+  # train_size: 23000
+  # test_size: 1000
 
-#  train_size: 17500
-#  test_size: 2500
-
-
+  # train_size: 10000
+  # test_size: 2500
 
 
-  probability_long: 0.20
-  probability_short: 0.80
+
+
+  probability_long: 0.50
+  probability_short: 0.40
 
 #  probability_long: 0.55
 #  probability_short: 0.45

@@ -1,13 +1,10 @@
 from src.config import load_config
-from src.data import load_data
+from src.data import join_timeframe_features, load_data
+from src.features import add_aoi_features, clean_features
 from src.indicators import add_indicators
-from src.features import (
-    add_aoi_features,
-    clean_features
-)
-from src.technical.strategy import generate_signals
-from src.technical.backtest import backtest
 from src.metrics import calculate_metrics
+from src.technical.backtest import backtest
+from src.technical.strategy import generate_signals
 
 
 def main():
@@ -33,6 +30,30 @@ def main():
     df = add_aoi_features(df)
 
     df = clean_features(df)
+
+    confirmation_timeframes = [
+        ("m1", "use_m1_confirmation", "m1_parquet", 1),
+        ("m5", "use_m5_confirmation", "m5_parquet", 5),
+        ("m15", "use_m15_confirmation", "lower_timeframe_parquet", 15),
+        ("m30", "use_m30_confirmation", "m30_parquet", 30),
+        ("h1", "use_h1_confirmation", "h1_parquet", 60),
+    ]
+
+    for timeframe, enabled_key, path_key, timeframe_minutes in confirmation_timeframes:
+        if not config["strategy"].get(enabled_key, False):
+            continue
+
+        lower = load_data(config["data"][path_key])
+        lower = add_indicators(lower)
+        df = join_timeframe_features(
+            df,
+            lower,
+            timeframe,
+            timeframe_minutes,
+            config["data"]["timeframe_minutes"],
+        )
+        print(df)
+        print(f"Joined {lower.height:,} {timeframe.upper()} candles")
 
     print("Generating signals...")
 

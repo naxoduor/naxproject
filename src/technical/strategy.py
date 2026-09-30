@@ -20,6 +20,36 @@ def generate_signals(df, config):
         (pl.col("atr_ratio") >= strategy["min_atr_ratio"])
     )
 
+    short_condition = (
+        (pl.col("sma50") < pl.col("sma100"))
+        &
+        (pl.col("macd") < pl.col("macd_signal"))
+        &
+        (pl.col("rsi") >= technical["rsi_short_min"])
+        &
+        (pl.col("rsi") <= technical["rsi_short_max"])
+        &
+        (pl.col("bb_position") >=
+         (1 - technical["bollinger_distance"]))
+        &
+        (pl.col("atr_ratio") >= strategy["min_atr_ratio"])
+    )
+
+    for timeframe in ("m1", "m5", "m15", "m30", "h1"):
+        if not strategy.get(f"use_{timeframe}_confirmation", False):
+            continue
+
+        long_condition = (
+            long_condition
+            & (pl.col(f"{timeframe}_close") > pl.col(f"{timeframe}_sma50"))
+            & (pl.col(f"{timeframe}_macd") > pl.col(f"{timeframe}_macd_signal"))
+        )
+        short_condition = (
+            short_condition
+            & (pl.col(f"{timeframe}_close") < pl.col(f"{timeframe}_sma50"))
+            & (pl.col(f"{timeframe}_macd") < pl.col(f"{timeframe}_macd_signal"))
+        )
+
     # long_condition = (
     #         (pl.col("ema20") > pl.col("ema50")) &
     #         (pl.col("ema50") > pl.col("ema200")) &
@@ -38,21 +68,6 @@ def generate_signals(df, config):
     # )
 
 
-
-    short_condition = (
-        (pl.col("sma50") < pl.col("sma100"))
-        &
-        (pl.col("macd") < pl.col("macd_signal"))
-        &
-        (pl.col("rsi") >= technical["rsi_short_min"])
-        &
-        (pl.col("rsi") <= technical["rsi_short_max"])
-        &
-        (pl.col("bb_position") >=
-         (1 - technical["bollinger_distance"]))
-        &
-        (pl.col("atr_ratio") >= strategy["min_atr_ratio"])
-    )
 
     # short_condition = (
     #         (pl.col("ema20") < pl.col("ema50")) &
