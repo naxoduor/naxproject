@@ -47,7 +47,7 @@ def main():
         lower = add_indicators(lower)
         df = join_timeframe_features(
             df,
-            lower,
+            lower,zw
             timeframe,
             timeframe_minutes,
             config["data"]["timeframe_minutes"],
@@ -77,6 +77,8 @@ def main():
             strategy["atr_tp_multiplier"],
         cost_pips=
             strategy["transaction_cost_pips"]
+
+
     )
 
     metrics = calculate_metrics(

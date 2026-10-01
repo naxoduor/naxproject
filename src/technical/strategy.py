@@ -44,6 +44,7 @@ def generate_signals(df, config):
             & (pl.col(f"{timeframe}_close") > pl.col(f"{timeframe}_sma50"))
             & (pl.col(f"{timeframe}_macd") > pl.col(f"{timeframe}_macd_signal"))
         )
+        
         short_condition = (
             short_condition
             & (pl.col(f"{timeframe}_close") < pl.col(f"{timeframe}_sma50"))
